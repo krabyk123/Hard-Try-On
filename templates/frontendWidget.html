@@ -1,0 +1,49 @@
+<section class="hard-tryon" data-product-id="{$product_id|escape}" data-endpoint="{$endpoint|escape}" data-max-upload-mb="{$max_upload_mb|escape}">
+  <div class="hard-tryon__card">
+    <div class="hard-tryon__head">
+      <div class="hard-tryon__title">Примерьте на себе</div>
+      <div class="hard-tryon__subtitle">Загрузите фото в полный рост лицом к камере. Плагин отправит ваше фото и фото товара в выбранный AI‑сервис.</div>
+    </div>
+
+    <div class="hard-tryon__grid">
+      <div class="hard-tryon__panel">
+        <div class="hard-tryon__label">1) Фото пользователя</div>
+        <label class="hard-tryon__drop">
+          <input class="hard-tryon__file" type="file" accept="image/*" />
+          <span class="hard-tryon__dropText">Перетащите фото сюда или нажмите, чтобы выбрать</span>
+          <span class="hard-tryon__hint">JPEG/PNG/WebP, до <strong>{$max_upload_mb|escape} MB</strong></span>
+        </label>
+
+        <div class="hard-tryon__consent">
+          <label><input type="checkbox" class="hard-tryon__consentChk"> Согласен(на) на обработку изображения для генерации результата</label>
+        </div>
+
+        <div class="hard-tryon__previewWrap">
+          <div class="hard-tryon__previewTitle">Предпросмотр</div>
+          <img class="hard-tryon__preview" alt="" />
+        </div>
+
+        <button class="hard-tryon__btn" type="button" disabled>Примерить</button>
+        <div class="hard-tryon__status" aria-live="polite"></div>
+      </div>
+
+      <div class="hard-tryon__panel">
+        <div class="hard-tryon__label">2) Результат</div>
+        <div class="hard-tryon__resultBox">
+          <div class="hard-tryon__resultPlaceholder">Здесь появится результат</div>
+          <img class="hard-tryon__result" alt="" />
+        </div>
+        <a class="hard-tryon__download" href="#" target="_blank" rel="noopener" style="display:none;">Открыть изображение</a>
+
+        <div class="hard-tryon__notes">
+          <div class="hard-tryon__notesTitle">Советы для лучшего результата</div>
+          <ul>
+            <li>Ровный свет без сильной тени на лице.</li>
+            <li>Простой фон, руки не перекрывают одежду.</li>
+            <li>Фото в полный рост обычно работает лучше.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

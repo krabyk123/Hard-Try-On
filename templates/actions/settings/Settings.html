@@ -1,0 +1,277 @@
+<div class="block double-padded" id="hardtryon-settings-page">
+    <h1>HARD AI Try-On</h1>
+    <p class="hint">Настройки, диагностика и просмотр логов плагина.</p>
+
+    <form action="?module=plugins&id={$plugin_id|escape}&action=save" method="post" id="plugins-settings-form">
+        {$wa->csrf()}
+
+        <div class="fields form">
+            <div class="field-group">
+                <div class="field">
+                    <div class="name">Основные настройки</div>
+                    <div class="value no-shift">
+                        <label>
+                            <input type="hidden" name="shop_hardtryon[enabled]" value="0">
+                            <input type="checkbox" name="shop_hardtryon[enabled]" value="1"{if !empty($settings_def.enabled.current)} checked{/if}>
+                            Показывать блок примерки на витрине
+                        </label>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <div class="name">Место вывода</div>
+                    <div class="value">
+                        <select name="shop_hardtryon[placement]">
+                            {foreach $settings_def.placement.options as $option}
+                                <option value="{$option.value|escape}"{if $settings_def.placement.current == $option.value} selected{/if}>{$option.title|escape}</option>
+                            {/foreach}
+                        </select>
+                        <p class="hint">Соответствует зонам хука frontend_product.</p>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <div class="name">Провайдер</div>
+                    <div class="value">
+                        <select name="shop_hardtryon[provider]" id="hardtryon-provider">
+                            {foreach $settings_def.provider.options as $option}
+                                <option value="{$option.value|escape}"{if $settings_def.provider.current == $option.value} selected{/if}>{$option.title|escape}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <div class="name">Шаблон промпта</div>
+                    <div class="value">
+                        <textarea name="shop_hardtryon[prompt_template]" rows="12" style="width:100%;max-width:1000px;">{$settings_def.prompt_template.current|escape}</textarea>
+                        <p class="hint">Плейсхолдеры: {literal}{PRODUCT_TITLE}, {PRODUCT_URL}, {PRODUCT_IMAGES_COUNT}{/literal}</p>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <div class="name">Референс позы</div>
+                    <div class="value">
+                        <input type="text" name="shop_hardtryon[reference_pose_url]" value="{$settings_def.reference_pose_url.current|escape}" style="width:100%;max-width:1000px;">
+                        <p class="hint">Если поле заполнено, URL будет отправляться провайдерам как отдельный pose reference.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field-group">
+                <div class="field">
+                    <div class="name">Ограничения и хранение</div>
+                    <div class="value">
+                        <label>Макс. размер файла, MB<br><input type="number" min="1" max="50" name="shop_hardtryon[max_upload_mb]" value="{$settings_def.max_upload_mb.current|escape}"></label>
+                        <br><br>
+                        <label>Лимит запросов в сутки на IP<br><input type="number" min="0" max="5000" name="shop_hardtryon[max_daily_requests_per_ip]" value="{$settings_def.max_daily_requests_per_ip.current|escape}"></label>
+                        <br><br>
+                        <label>Хранить результаты, часов<br><input type="number" min="1" max="720" name="shop_hardtryon[store_results_hours]" value="{$settings_def.store_results_hours.current|escape}"></label>
+                        <br><br>
+                        <label>
+                            <input type="hidden" name="shop_hardtryon[enable_logs]" value="0">
+                            <input type="checkbox" name="shop_hardtryon[enable_logs]" value="1"{if !empty($settings_def.enable_logs.current)} checked{/if}>
+                            Включить основной лог tryon.log
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field-group hardtryon-provider-group" data-provider-group="higgsfield">
+                <div class="field">
+                    <div class="name">Higgsfield</div>
+                    <div class="value">
+                        <label>API key ID<br><input type="text" name="shop_hardtryon[higgsfield_key_id]" value="{$settings_def.higgsfield_key_id.current|escape}" style="width:100%;max-width:560px;"></label>
+                        <br><br>
+                        <label>API key secret<br><input type="password" name="shop_hardtryon[higgsfield_key_secret]" value="{$settings_def.higgsfield_key_secret.current|escape}" style="width:100%;max-width:560px;"></label>
+                        <br><br>
+                        <label>Model ID<br><input type="text" name="shop_hardtryon[higgsfield_model_id]" value="{$settings_def.higgsfield_model_id.current|escape}" style="width:100%;max-width:560px;"></label>
+                        <br><br>
+                        <label>Timeout, сек.<br><input type="number" min="15" max="600" name="shop_hardtryon[higgsfield_timeout]" value="{$settings_def.higgsfield_timeout.current|escape}"></label>
+                        <br><br>
+                        <label>Payload template (JSON)<br><textarea name="shop_hardtryon[higgsfield_payload_template]" rows="10" style="width:100%;max-width:1000px;">{$settings_def.higgsfield_payload_template.current|escape}</textarea></label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field-group hardtryon-provider-group" data-provider-group="gemini">
+                <div class="field">
+                    <div class="name">Gemini</div>
+                    <div class="value">
+                        <label>API key<br><input type="password" name="shop_hardtryon[gemini_api_key]" value="{$settings_def.gemini_api_key.current|escape}" style="width:100%;max-width:560px;"></label>
+                        <br><br>
+                        <label>Model<br><input type="text" name="shop_hardtryon[gemini_model]" value="{$settings_def.gemini_model.current|escape}" style="width:100%;max-width:560px;"></label>
+                        <br><br>
+                        <label>Timeout, сек.<br><input type="number" min="15" max="600" name="shop_hardtryon[gemini_timeout]" value="{$settings_def.gemini_timeout.current|escape}"></label>
+                        <br><br>
+                        <label>
+                            <input type="hidden" name="shop_hardtryon[gemini_proxy_enabled]" value="0">
+                            <input type="checkbox" name="shop_hardtryon[gemini_proxy_enabled]" value="1"{if !empty($settings_def.gemini_proxy_enabled.current)} checked{/if}>
+                            Использовать SOCKS5-прокси
+                        </label>
+                        <br><br>
+                        <label>Proxy host<br><input type="text" name="shop_hardtryon[gemini_proxy_host]" value="{$settings_def.gemini_proxy_host.current|escape}"></label>
+                        <br><br>
+                        <label>Proxy port<br><input type="text" name="shop_hardtryon[gemini_proxy_port]" value="{$settings_def.gemini_proxy_port.current|escape}"></label>
+                        <br><br>
+                        <label>Proxy user<br><input type="text" name="shop_hardtryon[gemini_proxy_user]" value="{$settings_def.gemini_proxy_user.current|escape}"></label>
+                        <br><br>
+                        <label>Proxy password<br><input type="password" name="shop_hardtryon[gemini_proxy_pass]" value="{$settings_def.gemini_proxy_pass.current|escape}"></label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field-group hardtryon-provider-group" data-provider-group="custom">
+                <div class="field">
+                    <div class="name">Custom endpoint</div>
+                    <div class="value">
+                        <label>Endpoint URL<br><input type="text" name="shop_hardtryon[custom_endpoint]" value="{$settings_def.custom_endpoint.current|escape}" style="width:100%;max-width:1000px;"></label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="value submit">
+                    <input type="submit" class="button green" value="Сохранить">
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <hr>
+
+    <div class="fields form">
+        <div class="field">
+            <div class="name">Диагностика изображений товара</div>
+            <div class="value">
+                <input type="number" id="hardtryon-diagnostic-product-id" placeholder="ID товара" style="width:160px;">
+                <button type="button" class="button" id="hardtryon-diagnostic-button">Проверить</button>
+                <p class="hint">Показывает, какие изображения товара реально увидит плагин.</p>
+                <div id="hardtryon-diagnostic-result" style="display:none;margin-top:15px;"></div>
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="name">Debug log</div>
+            <div class="value">
+                <button type="button" class="button red" id="hardtryon-clear-log">Очистить debug.log</button>
+                <p class="hint">debug.log пишется всегда и используется для технической диагностики переноса.</p>
+                <textarea readonly style="width:100%;height:280px;font-family:monospace;">{$debug_log_tail|escape}</textarea>
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="name">tryon.log</div>
+            <div class="value">
+                <textarea readonly style="width:100%;height:200px;font-family:monospace;">{$tryon_log_tail|escape}</textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    function getCookie(name) {
+        var matches = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()\[\]\\/+^])/g, '\\$1') + '=([^;]*)'));
+        return matches ? decodeURIComponent(matches[1]) : '';
+    }
+
+    function updateProviderVisibility() {
+        var provider = document.getElementById('hardtryon-provider');
+        var value = provider ? provider.value : 'higgsfield';
+        document.querySelectorAll('.hardtryon-provider-group').forEach(function (node) {
+            node.style.display = node.getAttribute('data-provider-group') === value ? '' : 'none';
+        });
+    }
+
+    var provider = document.getElementById('hardtryon-provider');
+    if (provider) {
+        provider.addEventListener('change', updateProviderVisibility);
+        updateProviderVisibility();
+    }
+
+    var diagBtn = document.getElementById('hardtryon-diagnostic-button');
+    var diagInput = document.getElementById('hardtryon-diagnostic-product-id');
+    var diagResult = document.getElementById('hardtryon-diagnostic-result');
+    var clearBtn = document.getElementById('hardtryon-clear-log');
+
+    if (diagBtn) {
+        diagBtn.addEventListener('click', function () {
+            var productId = parseInt(diagInput.value, 10) || 0;
+            if (!productId) {
+                alert('Введите корректный ID товара.');
+                return;
+            }
+
+            var formData = new FormData();
+            formData.append('product_id', productId);
+            formData.append('_csrf', getCookie('_csrf'));
+
+            diagBtn.disabled = true;
+            fetch('{$diagnostic_url|escape:'javascript'}', {
+                method: 'POST',
+                body: formData,
+                credentials: 'same-origin',
+                headers: {'X-Requested-With': 'XMLHttpRequest'}
+            }).then(function (r) {
+                return r.json();
+            }).then(function (json) {
+                diagBtn.disabled = false;
+                diagResult.style.display = 'block';
+                if (!json || json.status !== 'ok') {
+                    var msg = 'Ошибка диагностики.';
+                    if (json && json.errors && json.errors[0]) {
+                        msg = Array.isArray(json.errors[0]) ? json.errors[0][0] : json.errors[0];
+                    }
+                    diagResult.innerHTML = '<div style="color:#b00020;">' + msg + '</div>';
+                    return;
+                }
+
+                var data = json.data || {};
+                var html = '';
+                html += '<p><strong>' + (data.product_title || '') + '</strong> (ID: ' + (data.product_id || '') + ')</p>';
+                if (data.images && data.images.length) {
+                    html += '<ol>';
+                    data.images.forEach(function (image) {
+                        html += '<li>' + (image.exists ? '✅' : '❌') + ' <a href="' + image.url + '" target="_blank" rel="noopener">' + image.url + '</a>';
+                        if (image.path) {
+                            html += '<div><code>' + image.path + '</code></div>';
+                        }
+                        html += '</li>';
+                    });
+                    html += '</ol>';
+                } else {
+                    html += '<div style="color:#b00020;">Изображения товара не найдены.</div>';
+                }
+                diagResult.innerHTML = html;
+            }).catch(function (error) {
+                diagBtn.disabled = false;
+                diagResult.style.display = 'block';
+                diagResult.innerHTML = '<div style="color:#b00020;">' + error.message + '</div>';
+            });
+        });
+    }
+
+    if (clearBtn) {
+        clearBtn.addEventListener('click', function () {
+            if (!confirm('Очистить debug.log?')) {
+                return;
+            }
+
+            var formData = new FormData();
+            formData.append('_csrf', getCookie('_csrf'));
+
+            fetch('{$clear_log_url|escape:'javascript'}', {
+                method: 'POST',
+                body: formData,
+                credentials: 'same-origin',
+                headers: {'X-Requested-With': 'XMLHttpRequest'}
+            }).then(function (r) {
+                return r.json();
+            }).then(function () {
+                location.reload();
+            });
+        });
+    }
+})();
+</script>
