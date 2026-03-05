@@ -6,7 +6,7 @@ HARD AI Try-On for Shop-Script
 - frontend-роут для AJAX через lib/config/routing.php;
 - JSON-контроллер генерации изображения;
 - CSRF для frontend POST-запроса;
-- поддержка Higgsfield / Gemini / Custom endpoint;
+- поддержка Gemini / Custom endpoint;
 - rate limit по IP в сутки;
 - хранение пользовательских загрузок, результатов и scaled-копий в wa-data/public/shop/plugins/hardtryon/;
 - основной лог tryon.log и отдельный debug.log в wa-data/protected/shop/plugins/hardtryon/;
